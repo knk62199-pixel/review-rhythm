@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지난 시간 배운 규칙, 다시 만나기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#FFF3E6;
+    --bg-2:#EFF7F5;
+    --ink:#2B2250;
+    --ink-soft:#6B6485;
+    --kung-color:#FF9257;
+    --kung-dark:#E0723A;
+    --jjak-color:#2BBFAE;
+    --jjak-dark:#1B948A;
+    --gold:#FFC93C;
+    --card-bg:#FFFFFF;
+    --shadow: 0 18px 40px -14px rgba(43,34,80,0.22);
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    font-family:'Gowun Dodum', sans-serif;
+    color:var(--ink);
+    background: radial-gradient(circle at 10% 15%, #FFE3C7 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, #D9F2EC 0%, transparent 45%),
+                linear-gradient(160deg, var(--bg-1), var(--bg-2));
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:28px 16px;
+  }
+  .app{ width:100%; max-width:760px; }
+  .badge{
+    display:inline-block; background:var(--ink); color:#fff; font-size:13px;
+    padding:6px 14px; border-radius:999px; margin-bottom:10px;
+  }
+  h1{ font-family:'Jua', sans-serif; font-weight:400; font-size:clamp(22px,4vw,30px); margin:0 0 6px; }
+  .sub{ color:var(--ink-soft); font-size:15px; margin-bottom:18px; }
+
+  .stage-card{
+    background:var(--card-bg); border-radius:28px; box-shadow:var(--shadow);
+    padding:26px clamp(16px,4vw,36px) 30px; position:relative; overflow:hidden;
+  }
+
+  .preset-row{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:22px; }
+  .preset-btn{
+    border:2px solid #EADFF5; background:#FBF9FE; color:var(--ink);
+    font-family:'Gowun Dodum',sans-serif; font-size:16px; padding:11px 20px;
+    border-radius:16px; cursor:pointer; transition:.15s;
+  }
+  .preset-btn:hover{ transform:translateY(-1px); }
+  .preset-btn.active{ background:var(--ink); color:#fff; border-color:var(--ink); box-shadow:0 6px 14px -6px rgba(43,34,80,0.5); }
+
+  .reel{ display:flex; gap:clamp(8px,2vw,18px); justify-content:center; flex-wrap:wrap; align-items:flex-end; min-height:140px; }
+
+  .block{
+    width:82px; height:100px; border-radius:20px; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:6px; font-size:34px;
+    transition:transform .18s ease, box-shadow .18s ease; flex-shrink:0;
+  }
+  .block .label{ font-family:'Gowun Dodum',sans-serif; font-size:13px; color:rgba(255,255,255,0.95); }
+  .block.kung{ background:linear-gradient(160deg,var(--kung-color),var(--kung-dark)); box-shadow:0 10px 20px -8px rgba(224,114,58,0.5); }
+  .block.jjak{ background:linear-gradient(160deg,var(--jjak-color),var(--jjak-dark)); box-shadow:0 10px 20px -8px rgba(27,148,138,0.5); }
+  .block.mystery{
+    background:#F3EFFB; border:3px dashed #C9BEEA; color:#C9BEEA; box-shadow:none;
+    animation: floaty 2.2s ease-in-out infinite;
+  }
+  .block.mystery .label{ color:var(--ink-soft); }
+  @keyframes floaty{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  .block.playing{ transform:scale(1.15) translateY(-10px); box-shadow:0 0 0 8px rgba(255,201,60,0.32), 0 14px 26px -8px rgba(43,34,80,0.4) !important; }
+  .block.revealed{ animation:pop .5s ease; }
+  @keyframes pop{ 0%{transform:scale(.6) rotate(-8deg);opacity:0;} 60%{transform:scale(1.15) rotate(4deg);opacity:1;} 100%{transform:scale(1) rotate(0);} }
+
+  .speech{
+    margin:20px auto 0; max-width:480px; text-align:center; background:#FFF9EE;
+    border:2px solid #FFE1A8; border-radius:18px; padding:12px 20px; font-size:15px; min-height:24px;
+    transition:background .25s ease;
+  }
+  .speech.correct{ background:#EBFAF3; border-color:#9EE6C4; }
+
+  .controls{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:20px; }
+  .btn{
+    border:none; cursor:pointer; font-family:'Gowun Dodum',sans-serif; font-size:15px;
+    padding:12px 20px; border-radius:16px; color:#fff; background:var(--ink);
+    box-shadow:0 8px 16px -8px rgba(43,34,80,0.5); transition:.15s;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn.primary{ background:linear-gradient(160deg,var(--kung-color),var(--kung-dark)); }
+  .btn.reveal{ background:linear-gradient(160deg,var(--gold),#E0A800); color:var(--ink); }
+  .btn.ghost{ background:#fff; color:var(--ink); box-shadow: inset 0 0 0 2px #E4E1F5; }
+
+  .bridge{
+    margin-top:26px; background:var(--ink); color:#fff; border-radius:20px;
+    padding:16px 22px; text-align:center; font-size:15px; line-height:1.6;
+  }
+  .bridge b{ color:var(--gold); }
+</style>
+</head>
+<body>
+<div class="app">
+  <span class="badge">전시학습 상기</span>
+  <h1>🥁 지난 시간 배운 규칙, 다시 만나볼까요?</h1>
+  <p class="sub">몸으로 익혔던 리듬규칙을 다시 알아보고, 다음에 올 규칙을 맞혀봐요.</p>
+
+  <div class="stage-card">
+    <div class="preset-row" id="presetRow"></div>
+    <div class="reel" id="reel"></div>
+    <div class="speech" id="speech">▶ 재생하기를 눌러 규칙을 다시 들어보세요.</div>
+    <div class="controls">
+      <button class="btn primary" id="playBtn">▶ 재생하기</button>
+      <button class="btn reveal" id="predictBtn">🤔 다음 규칙은?</button>
+      <button class="btn ghost" id="resetBtn">↺ 다시하기</button>
+    </div>
+  </div>
+
+  <div class="bridge">오늘은 이 규칙을 <b>소리 블록(허밍블럭스)</b>으로 직접 만들어 볼 거예요!</div>
+</div>
+
+<script>
+(function(){
+  const PRESETS = {
+    "쿵쿵짝": ["쿵","쿵","짝","쿵","쿵","짝"],
+    "쿵짝쿵짝": ["쿵","짝","쿵","짝","쿵","짝"],
+    "쿵짝쿵": ["쿵","짝","쿵","쿵","짝","쿵"]
+  };
+  const ORDER = ["쿵쿵짝","쿵짝쿵짝","쿵짝쿵"];
+
+  const reel = document.getElementById('reel');
+  const speech = document.getElementById('speech');
+  const presetRow = document.getElementById('presetRow');
+  const playBtn = document.getElementById('playBtn');
+  const predictBtn = document.getElementById('predictBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  let audioCtx=null, noiseBuffer=null;
+  function ensureAudio(){ if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } if(audioCtx.state==='suspended'){ audioCtx.resume(); } }
+  function getNoise(){
+    if(noiseBuffer) return noiseBuffer;
+    const size = audioCtx.sampleRate*0.18;
+    const buffer = audioCtx.createBuffer(1,size,audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i=0;i<size;i++){ data[i]=(Math.random()*2-1)*Math.pow(1-i/size,2); }
+    noiseBuffer=buffer; return buffer;
+  }
+  function playTone(type){
+    ensureAudio();
+    const now = audioCtx.currentTime;
+    if(type==='쿵'){
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.type='sine'; osc.frequency.setValueAtTime(140, now); osc.frequency.exponentialRampToValueAtTime(80, now+0.3);
+      gain.gain.setValueAtTime(0.0001, now); gain.gain.exponentialRampToValueAtTime(0.55, now+0.02); gain.gain.exponentialRampToValueAtTime(0.0001, now+0.35);
+      osc.connect(gain).connect(audioCtx.destination); osc.start(now); osc.stop(now+0.4);
+    } else {
+      const noise = audioCtx.createBufferSource(); noise.buffer = getNoise();
+      const filter = audioCtx.createBiquadFilter(); filter.type='highpass'; filter.frequency.value=1600;
+      const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.45, now); gain.gain.exponentialRampToValueAtTime(0.0001, now+0.15);
+      noise.connect(filter).connect(gain).connect(audioCtx.destination); noise.start(now);
+    }
+  }
+
+  let currentPreset = "쿵쿵짝";
+  let sequence = [];
+  let mysteryFrom=-1, revealedUpTo=-1, isPlaying=false;
+
+  function buildPresetButtons(){
+    presetRow.innerHTML = ORDER.map(name =>
+      `<button class="preset-btn ${name===currentPreset?'active':''}" data-name="${name}">${name}</button>`
+    ).join('');
+  }
+
+  function reset(){
+    isPlaying=false;
+    sequence = PRESETS[currentPreset].slice();
+    mysteryFrom = sequence.length-1;
+    revealedUpTo = mysteryFrom-1;
+    speech.className='speech';
+    speech.textContent='▶ 재생하기를 눌러 규칙을 다시 들어보세요.';
+    render(-1);
+  }
+
+  function render(activeIndex){
+    reel.innerHTML='';
+    sequence.forEach((val,i)=>{
+      const el = document.createElement('div');
+      const hidden = (i>revealedUpTo) && (i>=mysteryFrom);
+      el.classList.add('block');
+      if(hidden){
+        el.classList.add('mystery');
+        el.innerHTML = '<span>❓</span><span class="label">다음은?</span>';
+      } else {
+        el.classList.add(val==='쿵' ? 'kung' : 'jjak');
+        el.innerHTML = val==='쿵'
+          ? '<span>👣</span><span class="label">쿵</span>'
+          : '<span>👏</span><span class="label">짝</span>';
+      }
+      if(i===activeIndex){ el.classList.add('playing'); }
+      reel.appendChild(el);
+    });
+  }
+
+  async function playSequence(){
+    if(isPlaying) return;
+    isPlaying=true;
+    speech.className='speech';
+    speech.textContent='🎧 잘 보고 다음에 올 규칙을 떠올려 보세요.';
+    for(let i=0;i<sequence.length;i++){
+      const hidden = (i>revealedUpTo) && (i>=mysteryFrom);
+      if(hidden) break;
+      render(i); playTone(sequence[i]);
+      await new Promise(r=>setTimeout(r,600));
+    }
+    render(-1); isPlaying=false;
+    if(revealedUpTo<mysteryFrom){ speech.textContent='이제 다음에 올 규칙을 예상해볼까요?'; }
+    else { speech.className='speech correct'; speech.textContent='맞아요! 규칙대로 소리가 반복되었어요 🎉'; }
+  }
+
+  function revealNext(){
+    if(revealedUpTo>=mysteryFrom) return;
+    revealedUpTo++;
+    render();
+    playTone(sequence[revealedUpTo]);
+    reel.children[revealedUpTo].classList.add('revealed');
+    speech.className='speech correct';
+    speech.textContent='정답이에요! 규칙대로 소리가 이어졌어요 🎉';
+  }
+
+  presetRow.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button[data-name]');
+    if(!btn) return;
+    currentPreset = btn.dataset.name;
+    buildPresetButtons();
+    reset();
+  });
+  playBtn.addEventListener('click', playSequence);
+  predictBtn.addEventListener('click', revealNext);
+  resetBtn.addEventListener('click', reset);
+
+  buildPresetButtons();
+  reset();
+})();
+</script>
+</body>
+</html>
